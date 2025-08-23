@@ -33,3 +33,4 @@ dist/
 
 # Archivos grandes
 *.rtf
+.DS_Store
