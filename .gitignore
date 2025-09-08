@@ -1,5 +1,7 @@
 # Dependencias
 node_modules/
+package-lock.json
+package.json
 
 # Archivos de entorno
 .env

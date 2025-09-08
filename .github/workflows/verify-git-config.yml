@@ -1,0 +1,37 @@
+name: Verify Git Configuration
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  verify-git-config:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - name: Verify Git User Configuration
+      run: |
+        # Verificar que el nombre de usuario no sea el predeterminado
+        if git log -1 --pretty=format:'%an' | grep -q 'Tu Nombre\|Your Name'; then
+          echo "::error::El nombre de usuario de Git no está configurado correctamente"
+          exit 1
+        fi
+        
+        # Verificar que el correo no sea el predeterminado
+        if git log -1 --pretty=format:'%ae' | grep -q 'tu@email.com\|your_email@example.com'; then
+          echo "::error::El correo electrónico de Git no está configurado correctamente"
+          exit 1
+        fi
+    
+    - name: Verify Commit Message
+      run: |
+        # Verificar que el mensaje del commit no esté vacío
+        if [ -z "$(git log -1 --pretty=%B | tr -d '[:space:]')" ]; then
+          echo "::error::El mensaje del commit no puede estar vacío"
+          exit 1
+        fi

@@ -8,6 +8,7 @@ const menu = [
   { href: "/(admin)/negocios", label: "Negocios" },
   { href: "/(admin)/reclamos", label: "Reclamos" },
   { href: "/(admin)/metricas", label: "Métricas" },
+  { href: "/", label: "Ver Plataforma" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
