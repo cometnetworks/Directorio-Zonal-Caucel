@@ -1,95 +1,64 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import styles from './page.module.css';
 
-export default function Home() {
+// Define the type for a single business
+interface Business {
+  id: string;
+  name: string;
+  address: string | null;
+  phone: string | null;
+  website: string | null;
+  photos: string | null;
+  is_featured: boolean;
+  distance_m: string;
+  lat: number;
+  lng: number;
+}
+
+// Function to fetch businesses from the backend
+async function getBusinesses(): Promise<Business[]> {
+  try {
+    // Using { cache: 'no-store' } to ensure fresh data on every request
+    const res = await fetch('http://localhost:5500/api/v1/businesses?lat=20.994&lng=-89.7044', { cache: 'no-store' });
+    console.log('Response:', res);
+    console.log('res.ok:', res.ok);
+    if (!res.ok) {
+      // This will be caught by the nearest error boundary
+      throw new Error('Failed to fetch businesses');
+    }
+    const data = await res.json();
+    return data.results;
+  } catch (error) {
+    console.error('Error fetching businesses:', error);
+    // In case of error, return an empty array to prevent the page from crashing
+    return [];
+  }
+}
+
+export default async function Home() {
+  const businesses = await getBusinesses();
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <main className={styles.main}>
+      <div className={styles.description}>
+        <h1>Directorio Zonal Caucel</h1>
+        <p>Encuentra los mejores negocios locales.</p>
+      </div>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      <div className={styles.grid}>
+        {businesses.length > 0 ? (
+          businesses.map((business) => (
+            <div key={business.id} className={styles.card}>
+              <h2>{business.name}</h2>
+              <p>{business.address}</p>
+              <p>Distancia: {business.distance_m} m</p>
+              {business.phone && <p>Teléfono: {business.phone}</p>}
+              {business.website && <p>Web: <a href={business.website}>{business.website}</a></p>}
+            </div>
+          ))
+        ) : (
+          <p>No se encontraron negocios. Asegúrate de que el backend esté funcionando y la base de datos tenga información.</p>
+        )}
+      </div>
+    </main>
   );
 }

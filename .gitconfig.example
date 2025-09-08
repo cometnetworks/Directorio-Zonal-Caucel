@@ -1,0 +1,31 @@
+# Archivo de ejemplo de configuración de Git
+# Copia este archivo a .gitconfig en tu directorio de usuario o en el directorio del proyecto
+# y reemplaza con tu información personal
+
+[user]
+    name = Tu Nombre Completo
+    email = tu.email@ejemplo.com
+
+[core]
+    # Configuraciones básicas
+    excludesfile = ~/.gitignore_global
+    autocrlf = input
+    safecrlf = true
+
+[push]
+    default = current
+
+[pull]
+    rebase = true
+
+[init]
+    defaultBranch = main
+
+[alias]
+    # Alias útiles
+    st = status
+    co = checkout
+    br = branch
+    ci = commit
+    unstage = reset HEAD --
+    last = log -1 HEAD

@@ -2,27 +2,29 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const { setToken } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     try {
-      const res = await fetch('http://localhost:3001/api/users/login', {
+      const res = await fetch('http://localhost:5500/api/v1/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Error de autenticación');
-      // Guardar el token en localStorage
-      localStorage.setItem('token', data.token);
-      router.push('/(admin)/dashboard');
+      console.log('Token from API:', data.token);
+      setToken(data.token);
+      router.push('/dashboard');
     } catch (err: any) {
       setError(err.message);
     }
