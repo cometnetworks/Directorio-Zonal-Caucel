@@ -72,42 +72,116 @@ export default function UsuariosTable() {
 
   return (
     <div>
-      {loading && <div>Cargando...</div>}
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      {loading && <div style={{ color: "var(--text-dark)", padding: "16px" }}>Cargando...</div>}
+      {error && <div style={{ color: "var(--accent)", backgroundColor: "var(--neutral)", padding: "12px", borderRadius: "6px", marginBottom: "16px" }}>{error}</div>}
+      <table style={{
+        width: "100%",
+        borderCollapse: "collapse",
+        backgroundColor: "var(--text-light)",
+        borderRadius: "8px",
+        overflow: "hidden",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+      }}>
         <thead>
-          <tr>
-            <th>ID</th>
-            <th>Email</th>
-            <th>Nombre</th>
-            <th>Rol</th>
-            <th>Fecha de registro</th>
-            <th>Acciones</th>
+          <tr style={{ backgroundColor: "var(--primary)", color: "var(--text-light)" }}>
+            <th style={{ padding: "12px", textAlign: "left", fontWeight: "bold" }}>ID</th>
+            <th style={{ padding: "12px", textAlign: "left", fontWeight: "bold" }}>Email</th>
+            <th style={{ padding: "12px", textAlign: "left", fontWeight: "bold" }}>Nombre</th>
+            <th style={{ padding: "12px", textAlign: "left", fontWeight: "bold" }}>Rol</th>
+            <th style={{ padding: "12px", textAlign: "left", fontWeight: "bold" }}>Fecha de registro</th>
+            <th style={{ padding: "12px", textAlign: "left", fontWeight: "bold" }}>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          {usuarios.map((u) => (
-            <tr key={u.id}>
-              <td>{u.id}</td>
-              <td>{u.email}</td>
-              <td>{u.name}</td>
-              <td>{u.role}</td>
-              <td>{new Date(u.created_at).toLocaleString()}</td>
-              <td>
-                <button onClick={() => setDetalleId(u.id)} style={{ marginRight: 8 }}>Ver</button>
-                <button onClick={() => handleRole(u.id, "admin")} disabled={u.role === "admin"}>
+          {usuarios.map((u, index) => (
+            <tr key={u.id} style={{
+              backgroundColor: index % 2 === 0 ? "var(--neutral)" : "var(--text-light)",
+              borderBottom: "1px solid var(--neutral)"
+            }}>
+              <td style={{ padding: "12px", color: "var(--text-dark)" }}>{u.id}</td>
+              <td style={{ padding: "12px", color: "var(--text-dark)" }}>{u.email}</td>
+              <td style={{ padding: "12px", color: "var(--text-dark)" }}>{u.name}</td>
+              <td style={{ padding: "12px", color: "var(--text-dark)" }}>{u.role}</td>
+              <td style={{ padding: "12px", color: "var(--text-dark)" }}>{new Date(u.created_at).toLocaleString()}</td>
+              <td style={{ padding: "12px" }}>
+                <button
+                  onClick={() => setDetalleId(u.id)}
+                  style={{
+                    backgroundColor: "var(--secondary)",
+                    color: "var(--text-light)",
+                    border: "none",
+                    padding: "6px 12px",
+                    borderRadius: "4px",
+                    marginRight: "8px",
+                    cursor: "pointer",
+                    fontSize: "14px"
+                  }}
+                >
+                  Ver
+                </button>
+                <button
+                  onClick={() => handleRole(u.id, "admin")}
+                  disabled={u.role === "admin"}
+                  style={{
+                    backgroundColor: u.role === "admin" ? "var(--neutral)" : "var(--accent)",
+                    color: u.role === "admin" ? "var(--text-dark)" : "var(--primary)",
+                    border: "none",
+                    padding: "6px 12px",
+                    borderRadius: "4px",
+                    marginRight: "8px",
+                    cursor: u.role === "admin" ? "not-allowed" : "pointer",
+                    fontSize: "14px"
+                  }}
+                >
                   Hacer admin
                 </button>
-                <button onClick={() => handleRole(u.id, "user")} disabled={u.role === "user"} style={{ marginLeft: 8 }}>
+                <button
+                  onClick={() => handleRole(u.id, "user")}
+                  disabled={u.role === "user"}
+                  style={{
+                    backgroundColor: u.role === "user" ? "var(--neutral)" : "var(--primary)",
+                    color: u.role === "user" ? "var(--text-dark)" : "var(--text-light)",
+                    border: "none",
+                    padding: "6px 12px",
+                    borderRadius: "4px",
+                    marginRight: "8px",
+                    cursor: u.role === "user" ? "not-allowed" : "pointer",
+                    fontSize: "14px"
+                  }}
+                >
                   Hacer usuario
                 </button>
-                <button onClick={() => handleDelete(u.id)} style={{ color: 'red', marginLeft: 8 }}>Eliminar</button>
+                <button
+                  onClick={() => handleDelete(u.id)}
+                  style={{
+                    backgroundColor: "var(--accent)",
+                    color: "var(--text-light)",
+                    border: "none",
+                    padding: "6px 12px",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "14px"
+                  }}
+                >
+                  Eliminar
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      {usuarios.length === 0 && !loading && <div>No hay usuarios.</div>}
+      {usuarios.length === 0 && !loading && (
+        <div style={{
+          textAlign: "center",
+          padding: "40px",
+          color: "var(--text-dark)",
+          backgroundColor: "var(--neutral)",
+          borderRadius: "8px",
+          marginTop: "20px"
+        }}>
+          No hay usuarios registrados.
+        </div>
+      )}
       {detalleId && (
         <UsuarioDetalleModal usuarioId={detalleId} onClose={() => setDetalleId(null)} />
       )}

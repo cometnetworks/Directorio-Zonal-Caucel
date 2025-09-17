@@ -8,11 +8,11 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   const router = useRouter();
 
   useEffect(() => {
-    if (!token) {
-      router.replace("/login");
-    }
+    // if (!token) {
+    //   router.replace("/login");
+    // }
   }, [token, router]);
 
-  if (!token) return null;
+  // if (!token) return null;
   return <>{children}</>;
 }
