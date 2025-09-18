@@ -36,7 +36,6 @@ const HomeScreen = ({ navigation }) => {
       <Text style={styles.greeting}>Directorio Zonal Caucel</Text>
       <Text style={styles.title}>¿Qué estás buscando hoy?</Text>
 
-      {/* Botón de búsqueda */}
       <TouchableOpacity style={styles.searchButton} onPress={handleOpenSearch}>
         <Text style={styles.searchButtonTitle}>🔍 Buscar negocios y servicios</Text>
         <Text style={styles.searchButtonSubtitle}>
@@ -44,7 +43,6 @@ const HomeScreen = ({ navigation }) => {
         </Text>
       </TouchableOpacity>
 
-      {/* Categorías */}
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Categorías populares</Text>
         <TouchableOpacity onPress={() => navigation.navigate('CategoriesScreen')}>
@@ -64,7 +62,6 @@ const HomeScreen = ({ navigation }) => {
         ))}
       </View>
 
-      {/* Favoritos */}
       <View style={styles.favoritesCard}>
         <Text style={styles.favoritesTitle}>Tus favoritos</Text>
         <Text style={styles.favoritesDescription}>
@@ -79,7 +76,6 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Botón de perfil */}
       <TouchableOpacity style={styles.profileButton} onPress={handleOpenProfile}>
         <Text style={styles.profileButtonText}>👤 Ir a mi perfil</Text>
       </TouchableOpacity>
