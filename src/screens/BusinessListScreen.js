@@ -1,11 +1,6 @@
-import React, { useMemo } from 'react';
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, { useCallback, useMemo } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useFavorites } from '../../context/FavoritesContext';
 
 export const MOCK_BUSINESSES = [
   {
@@ -57,6 +52,7 @@ export const MOCK_BUSINESSES = [
 
 const BusinessListScreen = ({ route, navigation }) => {
   const category = route?.params?.category ?? null;
+  const { addFavorite, isFavorite } = useFavorites();
 
   const filteredBusinesses = useMemo(() => {
     if (!category) {
@@ -66,16 +62,51 @@ const BusinessListScreen = ({ route, navigation }) => {
     return MOCK_BUSINESSES.filter((business) => business.category === category);
   }, [category]);
 
-  const renderBusiness = ({ item }) => (
-    <TouchableOpacity
-      activeOpacity={0.8}
-      style={styles.card}
-      onPress={() => navigation.navigate('BusinessDetail', { business: item })}
-    >
-      <Text style={styles.name}>{item.name}</Text>
-      <Text style={styles.address}>{item.address}</Text>
-      <Text style={styles.category}>{item.category}</Text>
-    </TouchableOpacity>
+  const handleSaveFavorite = useCallback(
+    (business) => {
+      if (!business) {
+        return;
+      }
+
+      addFavorite(business);
+    },
+    [addFavorite],
+  );
+
+  const renderBusiness = useCallback(
+    ({ item }) => {
+      const businessId = item?.id ?? item?._id ?? item?.businessId;
+      const saved = businessId ? isFavorite(businessId) : false;
+
+      return (
+        <View style={styles.card}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.cardInformation}
+            onPress={() => navigation.navigate('BusinessDetail', { business: item })}
+          >
+            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.address}>{item.address}</Text>
+            <Text style={styles.category}>{item.category}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            accessibilityRole="button"
+            style={[styles.favoriteButton, saved && styles.favoriteButtonDisabled]}
+            onPress={() => handleSaveFavorite(item)}
+            disabled={saved}
+          >
+            <Text
+              style={[styles.favoriteButtonText, saved && styles.favoriteButtonTextDisabled]}
+              numberOfLines={2}
+            >
+              {saved ? 'Guardado' : '⭐ Guardar en Favoritos'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    },
+    [handleSaveFavorite, isFavorite, navigation],
   );
 
   return (
@@ -118,6 +149,9 @@ const styles = StyleSheet.create({
     height: 12,
   },
   card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     backgroundColor: '#fff',
     padding: 16,
     borderRadius: 12,
@@ -126,6 +160,10 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
     elevation: 3,
+    gap: 12,
+  },
+  cardInformation: {
+    flex: 1,
   },
   name: {
     fontSize: 18,
@@ -143,6 +181,25 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#1d4ed8',
     textTransform: 'uppercase',
+  },
+  favoriteButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: '#fbbf24',
+    maxWidth: 140,
+  },
+  favoriteButtonDisabled: {
+    backgroundColor: '#e5e7eb',
+  },
+  favoriteButtonText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#92400e',
+    textAlign: 'center',
+  },
+  favoriteButtonTextDisabled: {
+    color: '#6b7280',
   },
   emptyText: {
     textAlign: 'center',
