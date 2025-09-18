@@ -23,9 +23,9 @@ const App = () => {
         <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Inicio' }} />
         <Stack.Screen name="CategoriesScreen" component={CategoriesScreen} options={{ title: 'Categorías' }} />
         <Stack.Screen name="SearchScreen" component={SearchScreen} options={{ title: 'Buscar' }} />
-        <Stack.Screen name="BusinessListScreen" component={BusinessListScreen} options={{ title: 'Negocios' }} />
+        <Stack.Screen name="BusinessList" component={BusinessListScreen} options={{ title: 'Negocios' }} />
         <Stack.Screen
-          name="BusinessDetailScreen"
+          name="BusinessDetail"
           component={BusinessDetailScreen}
           options={{ title: 'Detalle del negocio' }}
         />

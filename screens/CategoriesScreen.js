@@ -16,7 +16,7 @@ const CategoriesScreen = ({ navigation }) => {
   const handleCategoryPress = useCallback(
     (category) => {
       if (navigation && typeof navigation.navigate === 'function') {
-        navigation.navigate('BusinessListScreen', { category });
+        navigation.navigate('BusinessList', { category });
       }
     },
     [navigation]
