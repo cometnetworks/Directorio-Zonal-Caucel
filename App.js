@@ -31,7 +31,7 @@ const App = () => {
             component={BusinessDetailScreen}
             options={{ title: 'Detalle del negocio' }}
           />
-          <Stack.Screen name="Favoritos" component={FavoritesScreen} options={{ title: 'Favoritos' }} />
+          <Stack.Screen name="FavoritesScreen" component={FavoritesScreen} options={{ title: 'Favoritos' }} />
         </Stack.Navigator>
       </NavigationContainer>
     </FavoritesProvider>

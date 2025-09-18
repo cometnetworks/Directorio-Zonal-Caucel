@@ -9,13 +9,13 @@ const BusinessDetailScreen = ({ route }) => {
   const { addFavorite, isFavorite } = useFavorites();
 
   const businessId = useMemo(() => getBusinessId(business), [business]);
-  const saved = useMemo(() => (businessId ? isFavorite(businessId) : false), [businessId, isFavorite]);
+  const saved = useMemo(
+    () => (businessId ? isFavorite(businessId) : false),
+    [businessId, isFavorite]
+  );
 
   const handleSave = useCallback(() => {
-    if (!business || !businessId) {
-      return;
-    }
-
+    if (!business || !businessId) return;
     addFavorite(business);
   }, [addFavorite, business, businessId]);
 
@@ -31,26 +31,26 @@ const BusinessDetailScreen = ({ route }) => {
         <Text style={styles.title}>{name}</Text>
         {category ? <Text style={styles.category}>{category}</Text> : null}
 
-        {address ? (
+        {address && (
           <View style={styles.section}>
             <Text style={styles.sectionLabel}>Dirección</Text>
             <Text style={styles.sectionValue}>{address}</Text>
           </View>
-        ) : null}
+        )}
 
-        {phone ? (
+        {phone && (
           <View style={styles.section}>
             <Text style={styles.sectionLabel}>Teléfono</Text>
             <Text style={styles.sectionValue}>{phone}</Text>
           </View>
-        ) : null}
+        )}
 
-        {description ? (
+        {description && (
           <View style={styles.section}>
             <Text style={styles.sectionLabel}>Descripción</Text>
             <Text style={styles.sectionValue}>{description}</Text>
           </View>
-        ) : null}
+        )}
 
         <TouchableOpacity
           accessibilityRole="button"
@@ -58,7 +58,12 @@ const BusinessDetailScreen = ({ route }) => {
           onPress={handleSave}
           disabled={saved}
         >
-          <Text style={[styles.favoriteButtonText, saved && styles.favoriteButtonTextDisabled]}>
+          <Text
+            style={[
+              styles.favoriteButtonText,
+              saved && styles.favoriteButtonTextDisabled,
+            ]}
+          >
             {saved ? '✔ Guardado en Favoritos' : '⭐ Guardar en Favoritos'}
           </Text>
         </TouchableOpacity>
