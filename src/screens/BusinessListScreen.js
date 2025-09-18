@@ -62,7 +62,6 @@ const BusinessListScreen = ({ route, navigation }) => {
     if (!category) {
       return MOCK_BUSINESSES;
     }
-
     return MOCK_BUSINESSES.filter((business) => business.category === category);
   }, [category]);
 
@@ -83,7 +82,6 @@ const BusinessListScreen = ({ route, navigation }) => {
       <Text style={styles.header}>
         {category ? `Negocios de ${category}` : 'Negocios disponibles'}
       </Text>
-
       <FlatList
         data={filteredBusinesses}
         keyExtractor={(item) => item.id}
