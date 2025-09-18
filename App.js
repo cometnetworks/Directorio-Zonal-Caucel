@@ -6,7 +6,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import CategoriesScreen from './src/screens/CategoriesScreen';
 import SearchScreen from './src/screens/SearchScreen';
 import BusinessListScreen from './src/screens/BusinessListScreen';
-import BusinessDetailScreen from './src/screens/BusinessDetailScreen';
+import BusinessDetailScreen from './screens/BusinessDetailScreen';
 import FavoritesScreen from './src/screens/FavoritesScreen';
 
 const Stack = createStackNavigator();
