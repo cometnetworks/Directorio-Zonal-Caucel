@@ -8,6 +8,7 @@ import SearchScreen from './src/screens/SearchScreen';
 import BusinessListScreen from './src/screens/BusinessListScreen';
 import BusinessDetailScreen from './src/screens/BusinessDetailScreen';
 import FavoritesScreen from './src/screens/FavoritesScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
 import { FavoritesProvider } from './context/FavoritesContext';
 
 const Stack = createStackNavigator();
@@ -32,6 +33,7 @@ const App = () => {
             options={{ title: 'Detalle del negocio' }}
           />
           <Stack.Screen name="FavoritesScreen" component={FavoritesScreen} options={{ title: 'Favoritos' }} />
+          <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ title: 'Perfil' }} />
         </Stack.Navigator>
       </NavigationContainer>
     </FavoritesProvider>

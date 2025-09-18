@@ -24,7 +24,11 @@ const HomeScreen = ({ navigation }) => {
   }, [navigation]);
 
   const handleOpenFavorites = useCallback(() => {
-    navigation.navigate('Favoritos');
+    navigation.navigate('FavoritesScreen');
+  }, [navigation]);
+
+  const handleOpenProfile = useCallback(() => {
+    navigation.navigate('ProfileScreen');
   }, [navigation]);
 
   return (
@@ -32,11 +36,15 @@ const HomeScreen = ({ navigation }) => {
       <Text style={styles.greeting}>Directorio Zonal Caucel</Text>
       <Text style={styles.title}>¿Qué estás buscando hoy?</Text>
 
+      {/* Botón de búsqueda */}
       <TouchableOpacity style={styles.searchButton} onPress={handleOpenSearch}>
         <Text style={styles.searchButtonTitle}>🔍 Buscar negocios y servicios</Text>
-        <Text style={styles.searchButtonSubtitle}>Encuentra establecimientos por nombre, categoría o dirección.</Text>
+        <Text style={styles.searchButtonSubtitle}>
+          Encuentra establecimientos por nombre, categoría o dirección.
+        </Text>
       </TouchableOpacity>
 
+      {/* Categorías */}
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Categorías populares</Text>
         <TouchableOpacity onPress={() => navigation.navigate('CategoriesScreen')}>
@@ -56,6 +64,7 @@ const HomeScreen = ({ navigation }) => {
         ))}
       </View>
 
+      {/* Favoritos */}
       <View style={styles.favoritesCard}>
         <Text style={styles.favoritesTitle}>Tus favoritos</Text>
         <Text style={styles.favoritesDescription}>
@@ -69,6 +78,11 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.favoritesButtonText}>⭐ Ver Favoritos</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Botón de perfil */}
+      <TouchableOpacity style={styles.profileButton} onPress={handleOpenProfile}>
+        <Text style={styles.profileButtonText}>👤 Ir a mi perfil</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -186,6 +200,19 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     color: '#92400e',
+  },
+  profileButton: {
+    marginTop: 24,
+    backgroundColor: '#2563eb',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  profileButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 

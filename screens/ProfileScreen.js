@@ -1,190 +1,307 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import {
+  Alert,
+  ScrollView,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+} from 'react-native';
 
-const DEFAULT_PROFILE = {
-  avatar: 'https://i.pravatar.cc/200?img=32',
-  name: 'María Pérez',
-  email: 'maria.perez@example.com',
+const STATS = [
+  { label: 'Favoritos', value: 24 },
+  { label: 'Visitados', value: 12 },
+  { label: 'Reseñas', value: 8 },
+];
+
+const RECENT_SEARCHES = [
+  'Cafeterías en Caucel',
+  'Talleres mecánicos cercanos',
+  'Papelerías con servicio a domicilio',
+  'Heladerías familiares',
+  'Restaurantes con terraza',
+];
+
+const getRandomAvatarId = (currentId) => {
+  let newId = currentId;
+
+  while (newId === currentId) {
+    newId = Math.floor(Math.random() * 70) + 1;
+  }
+
+  return newId;
 };
 
 const ProfileScreen = () => {
-  const [profile, setProfile] = useState(DEFAULT_PROFILE);
-  const [formValues, setFormValues] = useState(DEFAULT_PROFILE);
+  const [name, setName] = useState('María Pérez');
+  const [email, setEmail] = useState('maria.perez@example.com');
   const [isEditing, setIsEditing] = useState(false);
+  const [formName, setFormName] = useState(name);
+  const [formEmail, setFormEmail] = useState(email);
+  const [avatarId, setAvatarId] = useState(32);
 
-  const handleChange = (field, value) => {
-    setFormValues((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  const avatarUrl = useMemo(() => `https://i.pravatar.cc/150?img=${avatarId}`, [avatarId]);
 
-  const handleStartEditing = () => {
-    setFormValues(profile);
+  const handleToggleEdit = () => {
+    if (isEditing) {
+      setName(formName.trim() || name);
+      setEmail(formEmail.trim() || email);
+      setIsEditing(false);
+      Alert.alert('Perfil actualizado', 'Tus datos han sido guardados correctamente.');
+      return;
+    }
+
+    setFormName(name);
+    setFormEmail(email);
     setIsEditing(true);
   };
 
-  const handleCancelEditing = () => {
-    setFormValues(profile);
-    setIsEditing(false);
+  const handleChangeAvatar = () => {
+    setAvatarId((current) => getRandomAvatarId(current));
   };
 
-  const handleSave = () => {
-    setProfile(formValues);
-    setIsEditing(false);
+  const handleLogout = () => {
+    Alert.alert('Cerrar sesión', 'Se ha simulado el cierre de sesión.');
   };
-
-  const renderReadOnly = () => (
-    <View style={styles.section}>
-      <Image source={{ uri: profile.avatar }} style={styles.avatar} />
-      <Text style={styles.label}>Nombre</Text>
-      <Text style={styles.value}>{profile.name}</Text>
-      <Text style={styles.label}>Correo electrónico</Text>
-      <Text style={styles.value}>{profile.email}</Text>
-      <TouchableOpacity style={styles.primaryButton} onPress={handleStartEditing}>
-        <Text style={styles.primaryButtonText}>Editar perfil</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
-  const renderForm = () => (
-    <View style={styles.section}>
-      <Text style={styles.label}>URL del avatar</Text>
-      <TextInput
-        value={formValues.avatar}
-        onChangeText={(text) => handleChange('avatar', text)}
-        style={styles.input}
-        placeholder="https://..."
-        autoCapitalize="none"
-      />
-      <Image source={{ uri: formValues.avatar || DEFAULT_PROFILE.avatar }} style={styles.avatarPreview} />
-
-      <Text style={styles.label}>Nombre</Text>
-      <TextInput
-        value={formValues.name}
-        onChangeText={(text) => handleChange('name', text)}
-        style={styles.input}
-        placeholder="Tu nombre"
-      />
-
-      <Text style={styles.label}>Correo electrónico</Text>
-      <TextInput
-        value={formValues.email}
-        onChangeText={(text) => handleChange('email', text)}
-        style={styles.input}
-        placeholder="tu@email.com"
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
-
-      <View style={styles.actions}>
-        <TouchableOpacity style={styles.secondaryButton} onPress={handleCancelEditing}>
-          <Text style={styles.secondaryButtonText}>Cancelar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.primaryButton} onPress={handleSave}>
-          <Text style={styles.primaryButtonText}>Guardar</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Mi perfil</Text>
-      {isEditing ? renderForm() : renderReadOnly()}
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <View style={styles.profileCard}>
+        <View style={styles.avatarWrapper}>
+          <Image source={{ uri: avatarUrl }} style={styles.avatar} />
+          <TouchableOpacity style={styles.changePhotoButton} onPress={handleChangeAvatar}>
+            <Text style={styles.changePhotoText}>Cambiar foto</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.infoSection}>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Nombre</Text>
+            {isEditing ? (
+              <TextInput
+                value={formName}
+                onChangeText={setFormName}
+                style={styles.input}
+                placeholder="Tu nombre"
+              />
+            ) : (
+              <Text style={styles.infoValue}>{name}</Text>
+            )}
+          </View>
+
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Correo electrónico</Text>
+            {isEditing ? (
+              <TextInput
+                value={formEmail}
+                onChangeText={setFormEmail}
+                style={styles.input}
+                placeholder="correo@ejemplo.com"
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
+            ) : (
+              <Text style={styles.infoValue}>{email}</Text>
+            )}
+          </View>
+
+          <TouchableOpacity
+            style={[styles.primaryButton, isEditing && styles.saveButton]}
+            onPress={handleToggleEdit}
+          >
+            <Text style={styles.primaryButtonText}>
+              {isEditing ? 'Guardar cambios' : 'Editar perfil'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Tu actividad</Text>
+        <View style={styles.statsRow}>
+          {STATS.map((stat) => (
+            <View key={stat.label} style={styles.statCard}>
+              <Text style={styles.statValue}>{stat.value}</Text>
+              <Text style={styles.statLabel}>{stat.label}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Búsquedas recientes</Text>
+        {RECENT_SEARCHES.map((item) => (
+          <View key={item} style={styles.searchItem}>
+            <View style={styles.searchBullet} />
+            <Text style={styles.searchText}>{item}</Text>
+          </View>
+        ))}
+      </View>
+
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Text style={styles.logoutButtonText}>Cerrar sesión</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 24,
-    flexGrow: 1,
-    backgroundColor: '#f4f4f5',
+    flex: 1,
+    backgroundColor: '#f4f5f7',
   },
-  section: {
+  content: {
+    padding: 20,
+    paddingBottom: 40,
+  },
+  profileCard: {
     backgroundColor: '#ffffff',
-    borderRadius: 16,
+    borderRadius: 24,
     padding: 24,
-    shadowColor: '#000000',
+    flexDirection: 'row',
+    gap: 24,
+    shadowColor: '#1f2933',
     shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
     elevation: 4,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
     marginBottom: 24,
-    color: '#111827',
-    textAlign: 'center',
+  },
+  avatarWrapper: {
+    alignItems: 'center',
   },
   avatar: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    alignSelf: 'center',
-    marginBottom: 24,
   },
-  avatarPreview: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    alignSelf: 'center',
-    marginBottom: 24,
-    backgroundColor: '#e5e7eb',
+  changePhotoButton: {
+    marginTop: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#2563eb',
   },
-  label: {
+  changePhotoText: {
+    color: '#2563eb',
+    fontWeight: '600',
+  },
+  infoSection: {
+    flex: 1,
+    justifyContent: 'center',
+    gap: 16,
+  },
+  infoRow: {
+    gap: 6,
+  },
+  infoLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#4b5563',
-    marginBottom: 4,
+    color: '#6b7280',
+    textTransform: 'uppercase',
   },
-  value: {
-    fontSize: 16,
+  infoValue: {
+    fontSize: 18,
     color: '#111827',
-    marginBottom: 16,
+    fontWeight: '600',
   },
   input: {
     borderWidth: 1,
     borderColor: '#d1d5db',
-    borderRadius: 10,
-    paddingHorizontal: 12,
+    borderRadius: 12,
+    paddingHorizontal: 14,
     paddingVertical: 10,
     fontSize: 16,
-    marginBottom: 16,
     backgroundColor: '#f9fafb',
-  },
-  actions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
   },
   primaryButton: {
     backgroundColor: '#2563eb',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
+    borderRadius: 16,
+    paddingVertical: 14,
     alignItems: 'center',
-    flex: 1,
+    marginTop: 8,
+  },
+  saveButton: {
+    backgroundColor: '#059669',
   },
   primaryButtonText: {
     color: '#ffffff',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
   },
-  secondaryButton: {
-    backgroundColor: '#e5e7eb',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    flex: 1,
+  section: {
+    backgroundColor: '#ffffff',
+    borderRadius: 24,
+    padding: 24,
+    shadowColor: '#1f2933',
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 3,
+    marginBottom: 24,
   },
-  secondaryButtonText: {
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '700',
     color: '#111827',
+    marginBottom: 20,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 16,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: '#eff6ff',
+    borderRadius: 20,
+    paddingVertical: 18,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+  },
+  statValue: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#1d4ed8',
+  },
+  statLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#1f2937',
+    marginTop: 6,
+  },
+  searchItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+  },
+  searchBullet: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#2563eb',
+    marginRight: 12,
+  },
+  searchText: {
+    flex: 1,
     fontSize: 16,
-    fontWeight: '600',
+    color: '#1f2937',
+  },
+  logoutButton: {
+    backgroundColor: '#ef4444',
+    borderRadius: 20,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  logoutButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '700',
   },
 });
 
