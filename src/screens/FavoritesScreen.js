@@ -15,7 +15,7 @@ const renderBusinessAddress = (business) => business?.address ?? business?.direc
 const renderBusinessCategory = (business) => business?.category ?? business?.categoria ?? '';
 const getBusinessId = (business) => business?.id ?? business?._id ?? business?.businessId ?? null;
 
-const FavoritesScreen = () => {
+const FavoritesScreen = ({ navigation }) => {
   const { favorites, removeFavorite, isLoading } = useFavorites();
 
   const listContentStyle = useMemo(
@@ -46,7 +46,10 @@ const FavoritesScreen = () => {
       const category = renderBusinessCategory(item);
 
       return (
-        <View style={styles.card}>
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() => navigation.navigate('BusinessDetail', { business: item })}
+        >
           <View style={styles.cardInformation}>
             <Text style={styles.cardName}>{name}</Text>
             {category ? <Text style={styles.cardCategory}>{category}</Text> : null}
@@ -62,10 +65,10 @@ const FavoritesScreen = () => {
               <Text style={styles.removeButtonText}>Quitar</Text>
             </TouchableOpacity>
           ) : null}
-        </View>
+        </TouchableOpacity>
       );
     },
-    [handleRemove],
+    [handleRemove, navigation],
   );
 
   const renderEmptyComponent = useCallback(
