@@ -1,7 +1,7 @@
 # Dependencias
 node_modules/
 package-lock.json
-package.json
+.expo/
 
 # Archivos de entorno
 .env
